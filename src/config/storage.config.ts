@@ -5,7 +5,7 @@ export const COOKEI = {
 		httpOnly: true,
 		domain: process.env.DOMAIN,
 		secure: true, // true
-		sameSite: 'strict', // 'lax'
+		sameSite: 'lax', // 'lax'
 	} as CookieOptions,
 
 	ACCESS_TOKEN: 'access_token',
