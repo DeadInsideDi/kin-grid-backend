@@ -1,7 +1,7 @@
 import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-import cookieParser from 'cookie-parser'
+import * as cookieParser from 'cookie-parser'
 import { AppModule } from './app.module'
 import { PrismaClientExceptionFilter } from './filters/prisma-client-exception.filter'
 
