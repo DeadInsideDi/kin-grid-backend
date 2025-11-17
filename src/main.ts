@@ -16,9 +16,18 @@ async function bootstrap() {
 
 	app.use(cookieParser())
 	app.enableCors({
-		origin: '*',
+		origin: process.env.FRONTEND_URL,
 		credentials: true,
-		exposedHeaders: 'set-cookie',
+		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+		allowedHeaders: [
+			'Origin',
+			'X-Requested-With',
+			'Content-Type',
+			'Accept',
+			'Authorization',
+			'X-CSRF-Token',
+		],
+		exposedHeaders: ['Set-Cookie'],
 	})
 
 	const config = new DocumentBuilder()
