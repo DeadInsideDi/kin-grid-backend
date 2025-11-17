@@ -14,7 +14,7 @@ async function bootstrap() {
 	app.useGlobalPipes(new ValidationPipe({ transform: true }))
 	app.useGlobalFilters(new PrismaClientExceptionFilter())
 
-	app.use(cookieParser('secret'))
+	app.use(cookieParser())
 	app.enableCors({
 		origin: process.env.FRONTEND_URL,
 		credentials: true,
