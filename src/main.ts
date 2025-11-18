@@ -15,20 +15,41 @@ async function bootstrap() {
 	app.useGlobalFilters(new PrismaClientExceptionFilter())
 
 	app.use(cookieParser())
-	// app.enableCors({
-	// 	origin: true,
-	// 	credentials: true,
-	// 	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-	// 	allowedHeaders: [
-	// 		'Origin',
-	// 		'X-Requested-With',
-	// 		'Content-Type',
-	// 		'Accept',
-	// 		'Authorization',
-	// 		'X-CSRF-Token',
-	// 	],
-	// 	exposedHeaders: ['Set-Cookie'],
-	// })
+	app.enableCors({
+		// origin: true,
+		// credentials: true,
+		// methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+		// allowedHeaders: [
+		// 	'Origin',
+		// 	'X-Requested-With',
+		// 	'Content-Type',
+		// 	'Accept',
+		// 	'Authorization',
+		// 	'X-CSRF-Token',
+		// ],
+		// exposedHeaders: ['Set-Cookie'],
+		origin: (origin: string, callback: Function) => {
+			// Allow any origin
+			console.log(origin)
+			callback(null, true)
+		},
+		credentials: true,
+		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD'],
+		allowedHeaders: [
+			'Origin',
+			'X-Requested-With',
+			'Content-Type',
+			'Accept',
+			'Authorization',
+			'X-CSRF-Token',
+			'Access-Control-Allow-Headers',
+			'Access-Control-Allow-Origin',
+			'Access-Control-Allow-Credentials',
+		],
+		exposedHeaders: ['Set-Cookie', 'Authorization'],
+		preflightContinue: false,
+		optionsSuccessStatus: 204,
+	})
 
 	const config = new DocumentBuilder()
 		.setTitle('KinGrid API')
