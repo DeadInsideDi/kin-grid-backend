@@ -28,24 +28,14 @@ async function bootstrap() {
 		// 	'X-CSRF-Token',
 		// ],
 		// exposedHeaders: ['Set-Cookie'],
-		origin: (origin: string, callback: Function) => {
-			// Allow any origin
-			console.log(origin)
-			callback(null, true)
-		},
+		// origin: (origin: string, callback: Function) => {
+		// 	// Allow any origin
+		// 	console.log(origin)
+		// 	callback(null, true)
+		// },
+		origin: process.env.FRONTEND_URL,
 		credentials: true,
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD'],
-		// allowedHeaders: [
-		// 	'Origin',
-		// 	'X-Requested-With',
-		// 	'Content-Type',
-		// 	'Accept',
-		// 	'Authorization',
-		// 	'X-CSRF-Token',
-		// 	'Access-Control-Allow-Headers',
-		// 	'Access-Control-Allow-Origin',
-		// 	'Access-Control-Allow-Credentials',
-		// ],
 		exposedHeaders: ['Set-Cookie'],
 		preflightContinue: false,
 		optionsSuccessStatus: 204,
