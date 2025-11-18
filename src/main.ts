@@ -15,20 +15,20 @@ async function bootstrap() {
 	app.useGlobalFilters(new PrismaClientExceptionFilter())
 
 	app.use(cookieParser())
-	app.enableCors({
-		origin: true,
-		credentials: true,
-		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-		allowedHeaders: [
-			'Origin',
-			'X-Requested-With',
-			'Content-Type',
-			'Accept',
-			'Authorization',
-			'X-CSRF-Token',
-		],
-		exposedHeaders: ['Set-Cookie'],
-	})
+	// app.enableCors({
+	// 	origin: true,
+	// 	credentials: true,
+	// 	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+	// 	allowedHeaders: [
+	// 		'Origin',
+	// 		'X-Requested-With',
+	// 		'Content-Type',
+	// 		'Accept',
+	// 		'Authorization',
+	// 		'X-CSRF-Token',
+	// 	],
+	// 	exposedHeaders: ['Set-Cookie'],
+	// })
 
 	const config = new DocumentBuilder()
 		.setTitle('KinGrid API')
