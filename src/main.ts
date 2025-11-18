@@ -20,7 +20,7 @@ async function bootstrap() {
 		credentials: true,
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD'],
 		exposedHeaders: ['Set-Cookie'],
-		preflightContinue: false,
+		// preflightContinue: false,
 		// optionsSuccessStatus: 204,
 	})
 
