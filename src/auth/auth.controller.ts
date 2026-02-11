@@ -33,6 +33,10 @@ export class AuthController {
 	) {
 		const result = await this.authService.register(dto, language)
 
+		if ('activationToken' in result) {
+			return { id: result.id, activationToken: result.activationToken }
+		}
+
 		this.authService.addRefreshTokenToResponse(res, result.refreshToken)
 		return { id: result.id, accessToken: result.accessToken }
 	}
