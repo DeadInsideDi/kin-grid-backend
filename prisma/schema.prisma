@@ -1,0 +1,137 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model FamilyMember {
+  id                        String         @id @default(cuid()) @db.VarChar(36)
+  createdAt                 DateTime       @default(now()) @map("created_at")
+  updatedAt                 DateTime       @updatedAt @map("updated_at")
+  firstName                 String         @map("first_name") @db.VarChar(191)
+  middleName                String         @default("") @map("middle_name") @db.VarChar(191)
+  lastName                  String         @default("") @map("last_name") @db.VarChar(191)
+  firstNameTransliteration  String         @default("") @map("first_name_transliteration") @db.VarChar(191)
+  middleNameTransliteration String         @default("") @map("middle_name_transliteration") @db.VarChar(191)
+  lastNameTransliteration   String         @default("") @map("last_name_transliteration") @db.VarChar(191)
+  gender                    Gender         @default(MALE)
+  birthDate                 DateTime       @default(now()) @map("birth_date")
+  birthPlace                String?        @map("birth_place") @db.VarChar(191)
+  deathDate                 DateTime?      @map("death_date")
+  description               String         @default("")
+  avatarImageUrl            String?        @map("avatar_image_url") @db.VarChar(191)
+  imageUrls                 String[]       @map("image_urls") @db.VarChar(191)
+  motherId                  String?        @map("mother_id") @db.VarChar(36)
+  fatherId                  String?        @map("father_id") @db.VarChar(36)
+  wifeId                    String?        @unique @map("wife_id") @db.VarChar(36)
+  familyId                  String         @map("family_id") @db.VarChar(36)
+  family                    Family         @relation(fields: [familyId], references: [id], onDelete: NoAction)
+  father                    FamilyMember?  @relation("father", fields: [fatherId], references: [id], onDelete: Cascade)
+  fatherChildren            FamilyMember[] @relation("father")
+  mother                    FamilyMember?  @relation("mother", fields: [motherId], references: [id], onDelete: Cascade)
+  motherChildren            FamilyMember[] @relation("mother")
+  wife                      FamilyMember?  @relation("spouse", fields: [wifeId], references: [id], onDelete: Cascade)
+  husband                   FamilyMember?  @relation("spouse")
+  husbandFormers            FormerSpouses[] @relation("husband_formers")
+  wifeFormers               FormerSpouses[] @relation("wife_formers")
+  user                      User?          @relation("member")
+
+  @@index([firstNameTransliteration])
+  @@index([middleNameTransliteration])
+  @@index([lastNameTransliteration])
+  @@index([updatedAt])
+  @@index([motherId])
+  @@index([fatherId])
+  @@map("family_member")
+}
+
+model FormerSpouses {
+  id              String       @id @default(cuid()) @db.VarChar(36)
+  formerWifeId    String       @unique @map("former_wife_id") @db.VarChar(36)
+  formerHusbandId String       @unique @map("former_husband_id") @db.VarChar(36)
+  formerHusband   FamilyMember @relation("husband_formers", fields: [formerHusbandId], references: [id], onDelete: Cascade)
+  formerWife      FamilyMember @relation("wife_formers", fields: [formerWifeId], references: [id], onDelete: Cascade)
+
+  @@map("former_spouses")
+}
+
+model User {
+  id                  String             @id @default(cuid()) @db.VarChar(36)
+  createdAt           DateTime           @default(now()) @map("created_at")
+  updatedAt           DateTime           @updatedAt @map("updated_at")
+  phone               String?            @unique @db.VarChar(15)
+  email               String?            @unique @db.VarChar(191)
+  username            String             @unique @db.VarChar(191)
+  password            String             @db.VarChar(191)
+  familyMemberId      String?            @unique @map("family_member_id") @db.VarChar(36)
+  familyId            String?            @map("family_id") @db.VarChar(36)
+  avatarImageUrl      String?            @map("avatar_image_url") @db.VarChar(191)
+  createdFamily       Family?            @relation("owner")
+  receivedInvitations FamilyInvitation[] @relation("received_invitations")
+  sendedInvitations   FamilyInvitation[] @relation("sended_invitations")
+  family              Family?            @relation(fields: [familyId], references: [id])
+  familyMember        FamilyMember?      @relation("member", fields: [familyMemberId], references: [id], onDelete: NoAction)
+
+  @@map("user")
+}
+
+model FamilyInvitation {
+  id             String           @id @default(cuid()) @db.VarChar(36)
+  createdAt      DateTime         @default(now()) @map("created_at")
+  familyId       String           @map("family_id") @db.VarChar(36)
+  familyMemberId String           @map("family_member_id") @db.VarChar(36)
+  inviterUserId  String           @map("inviter_user_id") @db.VarChar(36)
+  inviteeUserId  String?          @map("invitee_user_id") @db.VarChar(36)
+  expiresAt      DateTime
+  status         InvitationStatus @default(PENDING)
+  family         Family           @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  inviteeUser    User?            @relation("received_invitations", fields: [inviteeUserId], references: [id], onDelete: Cascade)
+  inviterUser    User             @relation("sended_invitations", fields: [inviterUserId], references: [id], onDelete: Cascade)
+
+  @@index([expiresAt])
+  @@map("family_invitation")
+}
+
+model Family {
+  id            String             @id @default(cuid()) @db.VarChar(36)
+  createdAt     DateTime           @default(now()) @map("created_at")
+  updatedAt     DateTime           @updatedAt @map("updated_at")
+  name          String             @unique @db.VarChar(191)
+  password      String             @db.VarChar(191)
+  ownerId       String?            @unique @map("owner_id") @db.VarChar(36)
+  owner         User?              @relation("owner", fields: [ownerId], references: [id])
+  invitations   FamilyInvitation[]
+  familyMembers FamilyMember[]
+  users         User[]
+
+  @@map("family")
+}
+
+model Pricing {
+  id          String   @id @default(cuid()) @db.VarChar(36)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  language    String   @default("en") @db.VarChar(2)
+  title       String   @db.VarChar(32)
+  monthlyPrice String
+  annualPrice String
+  keyFeatures String[] @db.VarChar(36)
+
+  @@map("pricing")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
+}
