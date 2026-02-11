@@ -35,6 +35,7 @@ async function bootstrap() {
 	await app.listen(PORT, async () =>
 		console.log(
 			`NEST SERVER STARTED AT PORT: ${PORT}, AT HOST: ${await app.getUrl()}`,
+			process.env,
 		),
 	)
 }
